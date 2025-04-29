@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8">
+		<title>홈</title>
+	</head>
+	<body>
+		홈 화면
+		게시글 전체 리스트가 보일 예정
+		<br>
+		1. 글쓰기 버튼
+		<button th:onclick="location.href='/post/new'">글 쓰기</button>
+		<button>글삭제</button>
+		3. 글 수정
+		<button>글수정</button>
+		등등
+		
+		etc.. 
+		로그인
+		
+		<section>
+	       <h2>최근 게시글</h2>
+	       <!-- 게시글 목록은 Controller에서 Model로 전달 받은 데이터로 동적으로 생성 -->
+	       <ul th:if="${posts != null and posts.size() > 0}" >
+	           <li th:each="post : ${posts}">
+				<p th:text="${post.title}"></p>
+				<p th:text="${post.content}"></p>
+	           </li>
+	       </ul>
+		   <ul th:unless="${posts.size() != 0}" >
+			게시글이 없습니다.
+		   </ul>
+	   </section>
+		   
+		<script type="text/javascript">
+			
+		</script>
+	</body>
+</html>
