@@ -4,9 +4,11 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 
 @Getter
+@Setter
 @Entity
 @Table(name = "post") // 반드시 소문자로
 public class Post {
