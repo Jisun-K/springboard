@@ -5,6 +5,72 @@
 		<title>게시글상세</title>
 	</head>
 	<body>
-		게시글 상세보기	
+		게시글 상세보기
+		<p th:text="${post.writer}"></p>
+		<p th:text="${post.createdAt}"></p>
+		<p th:text="${post.title}"></p>
+		<p th:text="${post.content}"></p>
+
+		<a th:href="@{/post/{id}/edit (id=${post.id})}">
+			글 수정
+		</a>
+		<form th:action="@{/post/{id}/delete(id=${post.id})}" method="post" onsubmit="return confirmDelete();">
+			<button type="submit">글 삭제</button>
+		</form>
+
+		<section>
+			<p>댓글</p>
+			<ul th:if="${comments != null and comments.size() > 0}">
+				<li th:each="comment : ${comments}">
+					<span th:text="${comment.writer}"></span>
+					<span th:text="${comment.content}"></span>
+					<span th:text="${comment.createdAt}"></span>
+					<th:block th:if="${session.user != null and session.user.username == comment.writer}">
+						<form th:action="@{/post/{postId}/comment/{commentId}/delete(postId=${post.id}, commentId=${comment.id})}" method="post">
+							<button type="submit">삭제</button>
+						</form>
+					</th:block>
+					<!-- 대댓글 토글 버튼 -->
+					<button type="button" th:attr="onclick=|toggleReplyForm(${comment.id})|">대댓글</button>
+					<!-- 대댓글 입력 폼 (기본 숨김) -->
+					<div th:attr="id='reply-form-' + ${comment.id}" style="display: none; margin-top: 8px;">
+						<form th:action="@{/post/{postId}/comment(postId=${post.id})}" method="post">
+							<input type="hidden" name="parentId" th:value="${comment.id}" />
+							<textarea name="content" placeholder="답글을 입력하세요" required></textarea>
+							<button type="submit">답글 등록</button>
+						</form>
+					</div>
+					<ul>
+						<li th:each="reply : ${comment.replies}">
+							<span th:text="${reply.writer}"></span>
+							<span th:text="${reply.content}"></span>
+							<span th:text="${reply.createdAt}"></span>
+							<th:block th:if="${session.user != null and session.user.username == reply.writer}">
+								<form th:action="@{/post/{postId}/comment/{commentId}/delete(postId=${post.id}, commentId=${reply.id})}" method="post">
+									<button type="submit">삭제</button>
+								</form>
+							</th:block>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<form th:action="@{/post/{postId}/comment(postId=${post.id})}" method="post">
+				<input type="text" name="content" placeholder="댓글을 입력하세요" required />
+				<button type="submit">등록</button>
+			</form>
+		</section>
+		<script>
+			function confirmDelete() {
+				return confirm("정말 삭제하시겠습니까?");
+			}
+			function toggleReplyForm(commentId) {
+				const form = document.getElementById('reply-form-' + commentId);
+				if (form.style.display === 'none') {
+					form.style.display = 'block';
+				} else {
+					form.style.display = 'none';
+				}
+			}
+		</script>
 	</body>
 </html>
