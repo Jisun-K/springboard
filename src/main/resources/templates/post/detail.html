@@ -11,9 +11,9 @@
 		<p th:text="${post.title}"></p>
 		<p th:text="${post.content}"></p>
 
-		<a th:href="@{/post/{id}/edit (id=${post.id})}">
-			글 수정
-		</a>
+		<form th:action="@{/post/{id}/check-password(id=${post.id})}" method="post" onsubmit="return checkPassword(event, [[${post.id}]])">
+			<button type="submit">글 수정</button>
+		</form>
 		<form th:action="@{/post/{id}/delete(id=${post.id})}" method="post" onsubmit="return confirmDelete();">
 			<button type="submit">글 삭제</button>
 		</form>
@@ -70,6 +70,25 @@
 				} else {
 					form.style.display = 'none';
 				}
+			}
+			async function checkPassword(event, postId) {
+				event.preventDefault();
+				const password = prompt("비밀번호를 입력하세요:");
+				if (!password) return false;
+
+				const response = await fetch(`/post/${postId}/check-password`, {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ password })
+				});
+
+				const result = await response.json();
+				if (result.match) {
+					window.location.href = `/post/${postId}/edit`;
+				} else {
+					alert("비밀번호가 일치하지 않습니다.");
+				}
+				return false;
 			}
 		</script>
 	</body>

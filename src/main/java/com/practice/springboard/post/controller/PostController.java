@@ -2,36 +2,28 @@ package com.practice.springboard.post.controller;
 
 import com.practice.springboard.comment.model.Comment;
 import com.practice.springboard.comment.service.CommentService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.practice.springboard.post.controller.dto.CreatePostRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import com.practice.springboard.post.model.Post;
 import com.practice.springboard.post.service.PostService;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Controller
 public class PostController {
 
 	private final PostService postService;
 	private final CommentService commentService;
 
-	@Autowired
-	public PostController(PostService postService, CommentService commentService) {
-		this.postService = postService;
-		this.commentService = commentService;
-	}
-
 	// 글 작성
-	@GetMapping("/post/new")
+	@GetMapping("/post")
 	public String createForm(Model model) {
-		model.addAttribute("post", new Post()); // 빈 Post 넘김
-		return "post/edit";
+		return "post/create";
 	}
 
 	// 글 수정
@@ -54,20 +46,20 @@ public class PostController {
 
 	// 새 글 저장
 	@PostMapping("/post")
-	public String savePost(@ModelAttribute Post post) {
-		postService.save(post);
+	public String savePost(@ModelAttribute CreatePostRequest request) {
+		postService.create(request);
 		return "redirect:/";
 	}
 
 	// 글 수정
-	@PostMapping("/post/{id}/update")
-	public String updatePost(@PathVariable Long id, @ModelAttribute Post post) {
-		postService.save(post);
+	@PutMapping("/post/{id}")
+	public String updatePost(@PathVariable Long id, @ModelAttribute CreatePostRequest request) {
+		postService.update(id, request);
 		return "redirect:/post/" + id;
 	}
 
 	// 글 삭제
-	@PostMapping("/post/{id}/delete")
+	@DeleteMapping("/post/{id}")
 	public String deletePost(@PathVariable Long id) {
 		postService.delete(id);
 		return "redirect:/";

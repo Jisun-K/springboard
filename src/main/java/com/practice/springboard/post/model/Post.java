@@ -1,39 +1,41 @@
 package com.practice.springboard.post.model;
 
-import java.time.LocalDateTime;
-
+import com.practice.springboard.post.controller.dto.CreatePostRequest;
+import com.practice.springboard.util.domain.model.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 
 @Getter
 @Setter
+@Builder(access = AccessLevel.PRIVATE)
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "post") // 반드시 소문자로
-public class Post {
-	@Id
+public class Post extends BaseTimeEntity {
+
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 자동 증가 전략
-	private Long id; // 게시글 ID
-	private String title; // 제목
-	private String content; // 내용
-	private String writer; // 작성자 이름
-	private LocalDateTime createdAt; // 작성일시
-	private LocalDateTime updatedAt; // 수정일시
-	private Long userId; // 작성자 (User FK)
-	
-	// 기본 생성자
-	public Post() {}
-	
-	// 생성자
-    public Post(Long id, String title, String content, String writer, LocalDateTime createdAt, LocalDateTime updatedAt, Long userId) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
-        this.writer = writer;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.userId = userId;
+    private Long id; // 게시글 ID
+    private String title; // 제목
+    private String content; // 내용
+    private String writer; // 작성자 이름
+    private String password;
+
+    public static Post createPost(String title, String content, String writer, String password) {
+        return Post.builder()
+                .title(title)
+                .content(content)
+				.writer(writer)
+				.password(password)
+                .build();
     }
-    
+
+	public void update(String title, String content, String writer, String password) {
+		this.title = title;
+		this.content = content;
+		this.writer = writer;
+		this.password = password;
+	}
 }

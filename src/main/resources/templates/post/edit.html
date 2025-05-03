@@ -6,11 +6,12 @@
 	</head>
 	<body>
 		게시글 작성	
-		<form th:action="@{${post.id} == null ? '/post' : '/post/' + ${post.id} + '/update'}" th:method="${post.id} == null ? 'post' : 'put'">
+		<form th:action="'/post/' + ${post.id} + '/update'" method="put">
 			<input type="text" name="title" th:value="${post.title}">
-		   <textarea name="content" th:text="${post.content}"></textarea>
-		   <input type="text" name="writer" th:value="${post.writer}">
-		   <button type="submit" th:text="${post.id} == null ? '작성' : '수정'"></button>
+			<textarea name="content" th:text="${post.content}"></textarea>
+			<input type="text" name="writer" th:value="${post.writer}">
+			<input type="number" name="password" th:value="${post.password}">
+			<button type="submit" th:text="수정"></button>
 		</form>
 	</body>
 </html>
