@@ -67,13 +67,15 @@ public class PostController {
 
 	// 비밀번호 확인
 	@PostMapping("/posts/{id}/check-password")
-	public String checkPassword(@PathVariable Long id, @RequestParam String password) {
-		boolean matched = postService.checkPassword(id, password);
-		if (matched) {
-			return "redirect:/post/" + id + "/edit";
-		} else {
-			return "redirect:/post/" + id; // 다시 해당 화면으로
+	public String checkPassword(@PathVariable Long id, @RequestParam String password, @RequestParam String action) {
+		if (postService.checkPassword(id, password)) {
+			return switch (action) {
+				case "edit" -> "redirect:/post/" + id + "/edit";
+				case "delete" -> deletePost(id);
+				default -> "redirect:/post/" + id;
+			};
 		}
+		return "redirect:/post/" + id;
 	}
 
 }

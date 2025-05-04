@@ -12,9 +12,7 @@
 		<p th:text="${post.content}"></p>
 
 		<button type="button"  th:onclick="|onClickUpdate(${post.id})|">글 수정</button>
-		<form th:action="@{/post/{id}/delete(id=${post.id})}" method="post" onsubmit="return confirmDelete();">
-			<button type="submit">글 삭제</button>
-		</form>
+		<button type="button" th:onclick="|onClickDelete(${post.id})|">글 삭제</button>
 
 		<section>
 			<p>댓글</p>
@@ -71,18 +69,32 @@
 			}
 
 			function onClickUpdate(postId) {
+				submitCheckPassword(postId, "edit");
+			}
+
+			function onClickDelete(postId) {
+				submitCheckPassword(postId, "delete");
+			}
+
+			function submitCheckPassword(postId, action) {
 				const password = prompt("비밀번호를 입력해주세요.");
 				if(password === null) return false;
 				const form = document.createElement("form");
 				form.method="POST";
 				form.action = `/posts/${postId}/check-password`;
 
-				const hiddenInput = document.createElement("input");
-				hiddenInput.type = "hidden";
-				hiddenInput.name = "password";
-				hiddenInput.value = password;
+				const pw = document.createElement("input");
+				pw.type = "hidden";
+				pw.name = "password";
+				pw.value = password;
 
-				form.appendChild(hiddenInput);
+				const act = document.createElement("input");
+				act.type = "hidden";
+				act.name = "action";
+				act.value = action;
+
+				form.appendChild(pw);
+				form.appendChild(act);
 				document.body.appendChild(form);
 				form.submit();
 			}
