@@ -6,11 +6,14 @@
 	</head>
 	<body>
 		게시글 작성	
-		<form th:action="'/post/' + ${post.id} + '/update'" method="put">
+		<form th:action="'/post/' + ${post.id}" method="post">
+			제목
 			<input type="text" name="title" th:value="${post.title}">
-			<textarea name="content" th:text="${post.content}"></textarea>
-			<input type="text" name="writer" th:value="${post.writer}">
-			<input type="number" name="password" th:value="${post.password}">
+			내용<textarea name="content" th:text="${post.content}"></textarea>
+			작성자<input type="text" name="writer" th:value="${post.writer}">
+			비밀번호(변경시에만)<input type="password" name="newPassword" placeholder="변경할시에만 입력해
+			주세요.">
+			<input type="hidden" name="password" th:value="${post.password}">
 			<button type="submit" th:text="수정"></button>
 		</form>
 	</body>

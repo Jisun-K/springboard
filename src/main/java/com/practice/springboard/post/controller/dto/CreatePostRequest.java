@@ -14,5 +14,5 @@ public class CreatePostRequest {
     private String content;
     private String writer;
     private String password;
-
+    private String newPassword;
 }

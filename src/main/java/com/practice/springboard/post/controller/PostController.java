@@ -20,21 +20,21 @@ public class PostController {
 	private final PostService postService;
 	private final CommentService commentService;
 
-	// 글 작성
+	// 글 작성 이동
 	@GetMapping("/post")
 	public String createForm(Model model) {
 		return "post/create";
 	}
 
-	// 글 수정
+	// 글 수정 이동
 	@GetMapping("/post/{id}/edit")
 	public String editForm(@PathVariable Long id, Model model) {
 		Post post = postService.getPost(id);
 		model.addAttribute("post", post);
-		return "post/edit"; // 똑같이 edit.html 사용
+		return "post/edit";
 	}
 
-	// 글 상세 조회
+	// 글 상세 조회 이동
 	@GetMapping("/post/{id}")
 	public String viewPost(@PathVariable Long id, Model model) {
 		Post post = postService.getPost(id);
@@ -51,8 +51,8 @@ public class PostController {
 		return "redirect:/";
 	}
 
-	// 글 수정
-	@PutMapping("/post/{id}")
+	// 글 수정 저장
+	@PostMapping("/post/{id}")
 	public String updatePost(@PathVariable Long id, @ModelAttribute CreatePostRequest request) {
 		postService.update(id, request);
 		return "redirect:/post/" + id;
@@ -64,4 +64,16 @@ public class PostController {
 		postService.delete(id);
 		return "redirect:/";
 	}
+
+	// 비밀번호 확인
+	@PostMapping("/posts/{id}/check-password")
+	public String checkPassword(@PathVariable Long id, @RequestParam String password) {
+		boolean matched = postService.checkPassword(id, password);
+		if (matched) {
+			return "redirect:/post/" + id + "/edit";
+		} else {
+			return "redirect:/post/" + id; // 다시 해당 화면으로
+		}
+	}
+
 }

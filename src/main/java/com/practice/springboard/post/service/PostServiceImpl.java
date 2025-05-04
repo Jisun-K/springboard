@@ -21,7 +21,6 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void create(CreatePostRequest request) {
-
         postRepository.save(Post.createPost(request.getTitle(), request.getContent(), request.getWriter(), passwordEncoder.encode(request.getPassword())));
     }
 
@@ -30,10 +29,18 @@ public class PostServiceImpl implements PostService {
     public void update(Long id, CreatePostRequest request) {
         Post post = postRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Post not found: " + id));
 
-        String password = request.getPassword();
-        validatePassword(password, post.getPassword());
+//        String password = request.getPassword();
+//        validatePassword(password, post.getPassword());
 
-        post.update(request.getTitle(), request.getContent(), request.getWriter(), passwordEncoder.encode(password));
+//        String passwordToSave = request.getNewPassword() != null && !request.getNewPassword().isBlank()
+//                ? passwordEncoder.encode(request.getNewPassword())
+//                : post.getPassword();
+        // Use new password only if provided
+        String passwordToSave = request.getNewPassword() != null && !request.getNewPassword().isBlank()
+                ? passwordEncoder.encode(request.getNewPassword())
+                : post.getPassword();
+
+        post.update(request.getTitle(), request.getContent(), request.getWriter(), passwordToSave);
     }
 
     @Override
@@ -47,13 +54,9 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post updatePost(Long id, Post newPostData) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Post not found: " + id));
-
-        post.setTitle(newPostData.getTitle());
-        post.setContent(newPostData.getContent());
-
-        return postRepository.save(post);
+    public Boolean checkPassword(Long id, String password) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Post not found: " + id));
+        return passwordEncoder.matches(password, post.getPassword());
     }
 
     private void validatePassword(String password, String target) {
@@ -61,4 +64,5 @@ public class PostServiceImpl implements PostService {
             throw new RuntimeException("invalid password");
         }
     }
+
 }
