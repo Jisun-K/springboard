@@ -12,7 +12,7 @@ import lombok.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "post") // 반드시 소문자로
+@Table(name = "post")
 public class Post extends BaseTimeEntity {
 
     @Id

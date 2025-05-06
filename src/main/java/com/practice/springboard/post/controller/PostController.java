@@ -1,5 +1,6 @@
 package com.practice.springboard.post.controller;
 
+import com.practice.springboard.comment.controller.dto.CommentResponseDto;
 import com.practice.springboard.comment.model.Comment;
 import com.practice.springboard.comment.service.CommentService;
 import com.practice.springboard.post.controller.dto.CreatePostRequest;
@@ -38,7 +39,7 @@ public class PostController {
 	@GetMapping("/post/{id}")
 	public String viewPost(@PathVariable Long id, Model model) {
 		Post post = postService.getPost(id);
-		List<Comment> comments = commentService.getCommentsByPostId(id);
+		List<CommentResponseDto> comments = commentService.getCommentsByPostId(id);
 		model.addAttribute("post", post);
 		model.addAttribute("comments", comments);
 		return "post/detail";
