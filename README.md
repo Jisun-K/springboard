@@ -8,9 +8,10 @@ Spring Boot 기반의 게시판 프로젝트입니다.
 ## 📌 주요 기능
 
 - 게시글 CRUD (Create / Read / Update / Delete)
-- 댓글 / 대댓글 (트리 구조)
-- 댓글 등록 <!--   수정/삭제 (비밀번호 확인 필요) -->
-- Thymeleaf + JavaScript 조합 UI
+- 댓글 / 대댓글 (트리 구조) 등록
+<!--   수정/삭제 (비밀번호 확인 필요) -->
+- 게시글 목록 페이지네이션 (5개씩 보기)
+- TailwindCSS 기반의 Thymeleaf + JavaScript UI 구성
 - H2 콘솔 연동으로 DB 확인 가능
 
 ---
@@ -19,6 +20,14 @@ Spring Boot 기반의 게시판 프로젝트입니다.
 
 > 💡 **주의: 본 프로젝트는 H2 인메모리 데이터베이스(`jdbc:h2:mem:`)를 사용하므로, 서버를 재시작하면 모든 데이터가 초기화됩니다.**  
 > 개발 및 데모 목적으로 적합하지만, 운영용 저장소로는 부적절합니다.
+
+---
+
+## 🧵 댓글 트리 구조 설명
+
+- `Comment` 엔티티는 자기참조 관계 (`@ManyToOne` → parent)로 구성됨
+- 서비스에서 모든 댓글을 불러온 뒤, 부모 ID 기준으로 `children` 필드를 채워 트리 구성
+- View에서는 `th:each`로 댓글 및 대댓글을 트리 형태로 렌더링
 
 ---
 
@@ -41,6 +50,8 @@ Spring Boot 기반의 게시판 프로젝트입니다.
 ## 📸 화면 미리보기
 
 > ✨ 이미지 캡처 넣기 (게시글 목록 / 상세 / 댓글 UI)
+![image](https://github.com/user-attachments/assets/abd45df7-e80f-45f6-9c1b-102fb0e01476)
+![image](https://github.com/user-attachments/assets/2f3ea0fb-c118-47a5-839d-f2ceb35b7eb1)
 
 
 
@@ -52,4 +63,5 @@ Spring Boot 기반의 게시판 프로젝트입니다.
 ♻️ 리팩토링
 🔒 인증/보안 관련
 💄 UI스타일링
+
 -->
