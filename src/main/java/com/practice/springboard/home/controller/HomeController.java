@@ -22,7 +22,7 @@ public class HomeController {
 	@GetMapping("/")
 	public String home(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
 					   Model model) {
-		Page<Post> posts = homeService.getPostList(pageable); // ✅ Page<Post> 반환
+		Page<Post> posts = homeService.getPostList(pageable);
 		model.addAttribute("posts", posts);
 		return "home";
 	}

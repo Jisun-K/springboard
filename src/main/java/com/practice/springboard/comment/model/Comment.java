@@ -29,7 +29,6 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    // 대댓글(댓글에 대한 댓글) 기능을 위한 자기참조 관계 필드
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private Comment parent;

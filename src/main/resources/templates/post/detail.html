@@ -31,7 +31,6 @@
 			  <span class="block text-xs text-gray-500" th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
 			  <button type="button" class="mt-2 text-xs text-blue-600 hover:underline" th:attr="onclick=|toggleReplyForm(${comment.id})|">대댓글</button>
 
-			  <!-- 대댓글 입력 폼 (기본 숨김) -->
 			  <form th:id="'reply-form-' + ${comment.id}" class="mt-2 flex flex-col gap-2 hidden" th:action="@{/post/{postId}/comment(postId=${post.id})}" method="post">
 				<input type="hidden" name="parent.id" th:value="${comment.id}" />
 				<input class="p-2 border rounded" type="text" name="writer" placeholder="작성자" required />
@@ -96,7 +95,6 @@
     }
   }
 
-  // 뒤로가기 방지 → 홈으로 이동
   window.addEventListener("load", () => {
     history.replaceState(null, "", location.href);
     window.addEventListener("popstate", () => {

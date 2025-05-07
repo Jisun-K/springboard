@@ -16,7 +16,7 @@ import lombok.*;
 public class Post extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // 자동 증가 전략
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 게시글 ID
     private String title; // 제목
     private String content; // 내용
