@@ -3,39 +3,44 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>홈</title>
+		<script src="https://cdn.tailwindcss.com"></script>
 	</head>
-	<body>
-		홈 화면
-		게시글 전체 리스트가 보일 예정
-		<br>
-		1. 글쓰기 버튼
-		<a th:href="@{/post}">
-			글 쓰기
-		</a>
-		<button>글삭제</button>
-		3. 글 수정
-		<button>글수정</button>
-		등등
-		
-		etc.. 
-		로그인
-		
-		<section>
-	       <h2>최근 게시글</h2>
-	       <!-- 게시글 목록은 Controller에서 Model로 전달 받은 데이터로 동적으로 생성 -->
-	       <ul th:if="${posts != null and posts.size() > 0}" >
-	           <li th:each="post : ${posts}">
-				   <a th:href="@{/post/{id}(id=${post.id})}">
-					   <p th:text="${post.title}"></p>
-					   <p th:text="${post.content}"></p>
-				   </a>
-	           </li>
-	       </ul>
-		   <ul th:unless="${posts.size() != 0}" >
-			게시글이 없습니다.
-		   </ul>
-	   </section>
-		   
+	<body class="bg-gray-100 text-gray-900">
+		<main class="max-w-3xl mx-auto mt-10 p-6 bg-white rounded shadow">
+			<p class="mb-4">
+				<a th:href="@{/post}" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+					글 쓰기
+				</a>
+			</p>
+
+			<section>
+		       <h2 class="text-xl font-semibold mb-4">📄 최근 게시글</h2>
+		       <ul th:if="${posts != null and posts.content.size() > 0}" class="space-y-4">
+		           <li th:each="post : ${posts.content}" class="p-4 border rounded hover:bg-gray-50">
+					   <a th:href="@{/post/{id}(id=${post.id})}">
+						   <p class="text-lg font-medium text-blue-700 hover:underline" th:text="${post.title}">제목</p>
+						   <p class="text-gray-600 text-sm" th:text="${post.content}">본문 미리보기</p>
+					   </a>
+		           </li>
+		       </ul>
+			   <p th:unless="${posts.content.size() != 0}" class="text-gray-500 italic">게시글이 없습니다.</p>
+		   </section>
+
+			<section>
+				<div class="mt-6 flex justify-center gap-2 text-sm">
+					<a th:if="${posts.hasPrevious()}" th:href="@{/(page=${posts.number - 1}, size=5)}" class="px-3 py-1 border rounded hover:bg-gray-200">이전</a>
+
+					<a th:each="i : ${#numbers.sequence(0, posts.totalPages - 1)}"
+					   th:classappend="${i == posts.number} ? 'bg-blue-500 text-white' : 'border'"
+					   th:href="@{/(page=${i}, size=5)}"
+					   class="px-3 py-1 rounded hover:bg-blue-100">
+        <span th:text="${i + 1}">1</span>
+    </a>
+
+					<a th:if="${posts.hasNext()}" th:href="@{/(page=${posts.number + 1}, size=5)}" class="px-3 py-1 border rounded hover:bg-gray-200">다음</a>
+				</div>
+			</section>
+		</main>
 		<script type="text/javascript">
 
 		</script>

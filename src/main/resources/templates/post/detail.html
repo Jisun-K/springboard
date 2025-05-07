@@ -2,84 +2,106 @@
 <html  xmlns:th="http://www.thymeleaf.org">
 	<head>
 		<meta charset="UTF-8">
-		<title>게시글상세</title>
+		<title>게시글</title>
+		<script src="https://cdn.tailwindcss.com"></script>
 	</head>
-	<body>
-		게시글 상세보기
-		<p th:text="${post.writer}"></p>
-		<p th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></p>
-		<p th:text="${post.title}"></p>
-		<p th:text="${post.content}"></p>
+	<body class="bg-gray-100 text-gray-900">
+	  <main class="max-w-3xl mx-auto p-6 bg-white mt-10 rounded shadow">
+		<div class="mb-4">
+		  <button onclick="window.location.href='/'" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">
+			← 홈으로 돌아가기
+		  </button>
+		</div>
+		<h1 class="text-2xl font-bold mb-2" th:text="${post.title}">제목</h1>
+		<p class="text-sm text-gray-600 mb-1" th:text="${post.writer}">작성자</p>
+		<p class="text-sm text-gray-500 mb-4" th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</p>
+		<p class="text-gray-800 mb-6" th:text="${post.content}">본문</p>
 
-		<button type="button"  th:onclick="|onClickUpdate(${post.id})|">글 수정</button>
-		<button type="button" th:onclick="|onClickDelete(${post.id})|">글 삭제</button>
+		<div class="flex gap-2 mb-6">
+		  <button type="button" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" th:onclick="|onClickUpdate(${post.id})|">글 수정</button>
+		  <button type="button" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600" th:onclick="|onClickDelete(${post.id})|">글 삭제</button>
+		</div>
 
-		<section>
-			<p>댓글</p>
-			<ul th:if="${comments != null and comments.size() > 0}">
-				<li th:each="comment : ${comments}">
-					<span th:text="${comment.writer}"></span>
-					<span th:text="${comment.content}"></span>
-					<span th:text="${comment.createdAt}"></span>
+		<section class="mt-10">
+		  <h2 class="text-lg font-semibold mb-4">💬 댓글</h2>
+		  <ul class="space-y-6" th:if="${comments != null and comments.size() > 0}">
+			<li th:each="comment : ${comments}" class="border-l-4 border-blue-300 pl-4">
+			  <span class="block text-sm font-medium" th:text="${comment.writer}"></span>
+			  <span class="block text-gray-700" th:text="${comment.content}"></span>
+			  <span class="block text-xs text-gray-500" th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
+			  <button type="button" class="mt-2 text-xs text-blue-600 hover:underline" th:attr="onclick=|toggleReplyForm(${comment.id})|">대댓글</button>
 
-					<!-- 대댓글 토글 버튼 -->
-					<button type="button" th:attr="onclick=|toggleReplyForm(${comment.id})|">대댓글</button>
-					<!-- 대댓글 입력 폼 (기본 숨김) -->
-<!--					<div th:attr="id='reply-form-' + ${comment.id}" style="display: none; margin-top: 8px;">-->
-						<form th:action="@{/post/{postId}/comment(postId=${post.id})}" method="post">
-							<input type="hidden" name="parent.id" th:value="${comment.id}" />
-							<textarea name="content" placeholder="답글을 입력하세요" required></textarea>
-							<button type="submit">답글 등록</button>
-						</form>
-<!--					</div>-->
-					<ul>
-						<li th:each="reply : ${comment.replies}">
-							<span th:text="${reply.writer}"></span>
-							<span th:text="${reply.content}"></span>
-							<span th:text="${reply.createdAt}"></span>
-						</li>
-					</ul>
+			  <!-- 대댓글 입력 폼 (기본 숨김) -->
+			  <form th:id="'reply-form-' + ${comment.id}" class="mt-2 flex flex-col gap-2 hidden" th:action="@{/post/{postId}/comment(postId=${post.id})}" method="post">
+				<input type="hidden" name="parent.id" th:value="${comment.id}" />
+				<input class="p-2 border rounded" type="text" name="writer" placeholder="작성자" required />
+				<textarea class="p-2 border rounded" name="content" placeholder="답글을 입력하세요" required></textarea>
+				<button class="self-end px-3 py-1 bg-green-400 text-white rounded hover:bg-green-500" type="submit">답글 등록</button>
+			  </form>
+
+			  <ul class="ml-4 mt-2 space-y-3">
+				<li th:each="reply : ${comment.replies}" class="border-l border-gray-300 pl-3">
+				  <span class="block text-sm font-medium" th:text="${reply.writer}"></span>
+				  <span class="block text-gray-700" th:text="${reply.content}"></span>
+				  <span class="block text-xs text-gray-500" th:text="${#temporals.format(reply.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
 				</li>
-			</ul>
-			<form th:action="@{/post/{postId}/comment(postId=${post.id})}" method="post">
-				<input type="text" name="writer" placeholder="작성자" required />
-				<input type="text" name="content" placeholder="댓글을 입력하세요" required />
-				<button type="submit">등록</button>
-			</form>
+			  </ul>
+			</li>
+		  </ul>
+
+		  <form class="mt-8 flex flex-col gap-2" th:action="@{/post/{postId}/comment(postId=${post.id})}" method="post">
+			<input class="p-2 border rounded" type="text" name="writer" placeholder="작성자" required />
+			<input class="p-2 border rounded" type="text" name="content" placeholder="댓글을 입력하세요" required />
+			<button class="self-end px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600" type="submit">등록</button>
+		  </form>
 		</section>
-		<script>
+	  </main>
+</body>
+<script>
+  function onClickUpdate(postId) {
+    submitCheckPassword(postId, "edit");
+  }
 
-			function onClickUpdate(postId) {
-				submitCheckPassword(postId, "edit");
-			}
+  function onClickDelete(postId) {
+    submitCheckPassword(postId, "delete");
+  }
 
-			function onClickDelete(postId) {
-				submitCheckPassword(postId, "delete");
-			}
+  function submitCheckPassword(postId, action) {
+    const password = prompt("비밀번호를 입력해주세요.");
+    if(password === null) return false;
+    const form = document.createElement("form");
+    form.method="POST";
+    form.action = `/posts/${postId}/check-password`;
 
-			function submitCheckPassword(postId, action) {
-				const password = prompt("비밀번호를 입력해주세요.");
-				if(password === null) return false;
-				const form = document.createElement("form");
-				form.method="POST";
-				form.action = `/posts/${postId}/check-password`;
+    const pw = document.createElement("input");
+    pw.type = "hidden";
+    pw.name = "password";
+    pw.value = password;
 
-				const pw = document.createElement("input");
-				pw.type = "hidden";
-				pw.name = "password";
-				pw.value = password;
+    const act = document.createElement("input");
+    act.type = "hidden";
+    act.name = "action";
+    act.value = action;
 
-				const act = document.createElement("input");
-				act.type = "hidden";
-				act.name = "action";
-				act.value = action;
+    form.appendChild(pw);
+    form.appendChild(act);
+    document.body.appendChild(form);
+    form.submit();
+  }
 
-				form.appendChild(pw);
-				form.appendChild(act);
-				document.body.appendChild(form);
-				form.submit();
-			}
+  function toggleReplyForm(commentId) {
+    const form = document.querySelector(`#reply-form-${commentId}`);
+    if (form) {
+      form.classList.toggle("hidden");
+    }
+  }
 
-		</script>
-	</body>
+  // 뒤로가기 방지 → 홈으로 이동
+  window.addEventListener("load", () => {
+    history.replaceState(null, "", location.href);
+    window.addEventListener("popstate", () => {
+      location.href = "/";
+    });
+  });
+</script>
 </html>

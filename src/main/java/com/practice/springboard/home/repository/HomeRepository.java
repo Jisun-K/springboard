@@ -1,24 +1,21 @@
 package com.practice.springboard.home.repository;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import com.practice.springboard.post.model.Post;
 import com.practice.springboard.post.repository.PostRepository;
 
+@RequiredArgsConstructor
 @Repository
 public class HomeRepository {
 
     private final PostRepository postRepository;
-    
-    @Autowired
-    public HomeRepository(PostRepository postRepository) {
-    	this.postRepository = postRepository;
+
+    public Page<Post> getPostList(Pageable pageable) {
+        return postRepository.findAll(pageable);
     }
-    
-	public List<Post> getAllPosts() {
-		return postRepository.findAll();
-	};
 	
 }

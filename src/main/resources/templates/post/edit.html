@@ -3,18 +3,32 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>게시글 작성</title>
+		<script src="https://cdn.tailwindcss.com"></script>
 	</head>
-	<body>
-		게시글 작성	
-		<form th:action="'/post/' + ${post.id}" method="post">
-			제목
-			<input type="text" name="title" th:value="${post.title}">
-			내용<textarea name="content" th:text="${post.content}"></textarea>
-			작성자<input type="text" name="writer" th:value="${post.writer}">
-			비밀번호(변경시에만)<input type="password" name="newPassword" placeholder="변경할시에만 입력해
-			주세요.">
-			<input type="hidden" name="password" th:value="${post.password}">
-			<button type="submit" th:text="수정"></button>
-		</form>
+	<body class="bg-gray-100 text-gray-900">
+		<main class="max-w-2xl mx-auto mt-10 p-6 bg-white rounded shadow">
+			<h1 class="text-2xl font-bold mb-6">✏️ 게시글 수정</h1>
+			<form th:action="'/post/' + ${post.id}" method="post" class="flex flex-col gap-4">
+				<div>
+					<label class="block font-medium">제목</label>
+					<input type="text" name="title" th:value="${post.title}" class="w-full p-2 border rounded" required />
+				</div>
+				<div>
+					<label class="block font-medium">내용</label>
+					<textarea name="content" class="w-full p-2 border rounded" th:text="${post.content}" required></textarea>
+				</div>
+				<div>
+					<label class="block font-medium">작성자</label>
+					<input type="text" name="writer" th:value="${post.writer}" class="w-full p-2 border rounded" required />
+				</div>
+				<div>
+					<label class="block font-medium">비밀번호 (변경시에만)</label>
+					<input type="password" name="newPassword" placeholder="변경할시에만 입력해주세요."
+						   class="w-full p-2 border rounded" />
+					<input type="hidden" name="password" th:value="${post.password}" />
+				</div>
+				<button type="submit" class="self-end px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">수정</button>
+			</form>
+		</main>
 	</body>
 </html>
