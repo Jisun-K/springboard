@@ -51,6 +51,7 @@ Spring Boot 기반의 게시판 프로젝트입니다.
 
 > ✨ 이미지 캡처 넣기 (게시글 목록 / 상세 / 댓글 UI)
 ![image](https://github.com/user-attachments/assets/abd45df7-e80f-45f6-9c1b-102fb0e01476)
+![image](https://github.com/user-attachments/assets/1831dcca-7862-4c1b-816a-2fb8c2976518)
 ![image](https://github.com/user-attachments/assets/2f3ea0fb-c118-47a5-839d-f2ceb35b7eb1)
 
 
