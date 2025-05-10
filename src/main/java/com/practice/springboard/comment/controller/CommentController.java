@@ -1,5 +1,6 @@
 package com.practice.springboard.comment.controller;
 
+import com.practice.springboard.comment.controller.dto.CommentCreateRequest;
 import com.practice.springboard.comment.model.Comment;
 import com.practice.springboard.comment.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -13,14 +14,9 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("/post/{postId}/comment")
-    public String saveComment(@PathVariable Long postId, @ModelAttribute Comment comment) {
+    public String saveComment(@PathVariable Long postId, @ModelAttribute CommentCreateRequest request) {
 
-//        if (parentId != null) {
-//            Comment parent = commentService.getById(parentId);
-//            comment.setParent(parent);
-//        }
-
-        commentService.saveComment(postId, comment);
+        commentService.saveComment(postId, request);
 
         return "redirect:/post/" + postId;
     }

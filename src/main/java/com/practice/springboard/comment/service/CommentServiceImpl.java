@@ -1,10 +1,12 @@
 package com.practice.springboard.comment.service;
 
+import com.practice.springboard.comment.controller.dto.CommentCreateRequest;
 import com.practice.springboard.comment.controller.dto.CommentResponseDto;
 import com.practice.springboard.comment.model.Comment;
 import com.practice.springboard.comment.repository.CommentRepository;
 import com.practice.springboard.post.model.Post;
 import com.practice.springboard.post.repository.PostRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,47 +31,51 @@ public class CommentServiceImpl implements CommentService {
         List<CommentResponseDto> resultComments = new ArrayList<>();
 
         for (Comment comment : comments) {
+            Long commentId = comment.getId();
+            Long parentId = comment.getParent() != null ? comment.getParent().getId() : null;
+
             CommentResponseDto dto = new CommentResponseDto(
-                    comment.getId(),
+                    commentId,
                     comment.getWriter(),
                     comment.getCreatedAt(),
                     comment.getContent(),
-                    comment.getParent() != null ? comment.getParent().getId() : null,
+                    parentId,
                     new ArrayList<>()
             );
-            dtoMap.put(comment.getId(), dto);
-        }
 
-        for(Comment comment : comments) {
-            CommentResponseDto dto = dtoMap.get(comment.getId());
-            if(comment.getParent() == null) {
+            dtoMap.put(commentId, dto);
+
+            if (parentId == null) {
                 resultComments.add(dto);
             } else {
-                CommentResponseDto parentDto = dtoMap.get(comment.getParent().getId());
-                if(parentDto != null) {
+                dtoMap.computeIfPresent(parentId, (id, parentDto) -> {
                     parentDto.getReplies().add(dto);
-                }
+                    return parentDto;
+                });
             }
         }
+
         return resultComments;
     }
 
+    @Transactional
     @Override
-    public void saveComment(Long postId, Comment comment) {
+    public void saveComment(Long postId, CommentCreateRequest request) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다: " + postId));
 
-        comment.setPost(post);
+        Comment newComment = Comment.createComment(request.getWriter(), request.getContent(), post);
 
-        if(comment.getParent() != null && comment.getParent().getId() != null) {
-            Comment parent = commentRepository.findById(comment.getParent().getId())
+        if (request.getParentId() != null) {
+            Comment parent = commentRepository.findById(request.getParentId())
                     .orElseThrow(() -> new IllegalArgumentException("댓글이 존재하지 않습니다."));
-            comment.setParent(parent);
+            newComment.syncParent(parent);
         }
 
-        commentRepository.save(comment);
+        commentRepository.save(newComment);
     }
 
+    @Transactional
     @Override
     public void delete(Long id) {
         commentRepository.deleteById(id);
@@ -77,7 +83,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Comment getById(Long id) {
-        return  commentRepository.findById(id)
+        return commentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다." + id));
     }
 }
