@@ -1,6 +1,7 @@
 package com.practice.springboard.comment.controller.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -8,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
+@Builder
 @Getter
 public class CommentResponseDto {
     private Long id;

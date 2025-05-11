@@ -11,10 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -27,35 +25,36 @@ public class CommentServiceImpl implements CommentService {
     public List<CommentResponseDto> getCommentsByPostId(Long postId) {
         List<Comment> comments = commentRepository.findByPostId(postId);
 
-        Map<Long, CommentResponseDto> dtoMap = new HashMap<>();
-        List<CommentResponseDto> resultComments = new ArrayList<>();
+        Map<Comment, List<Comment>> groupedCommentsByParent = comments.stream()
+                .collect(Collectors.groupingBy(
+                        c -> c.getParent() != null ? c.getParent() : c
+                ));
 
-        for (Comment comment : comments) {
-            Long commentId = comment.getId();
-            Long parentId = comment.getParent() != null ? comment.getParent().getId() : null;
+        return groupedCommentsByParent.entrySet().stream().map((entry) -> {
+                    Comment parent = entry.getKey();
+                    List<Comment> replies = entry.getValue();
 
-            CommentResponseDto dto = new CommentResponseDto(
-                    commentId,
-                    comment.getWriter(),
-                    comment.getCreatedAt(),
-                    comment.getContent(),
-                    parentId,
-                    new ArrayList<>()
-            );
+                    List<CommentResponseDto> repliesDto = replies.stream()
+                            .filter(r -> r.getId() != parent.getId())
+                            .map(r -> {
+                                return CommentResponseDto.builder()
+                                        .id(r.getId())
+                                        .writer(r.getWriter())
+                                        .createdAt(r.getCreatedAt())
+                                        .content(r.getContent())
+                                        .parentId(r.getParent().getId())
+                                        .build();
+                            }).toList();
 
-            dtoMap.put(commentId, dto);
-
-            if (parentId == null) {
-                resultComments.add(dto);
-            } else {
-                dtoMap.computeIfPresent(parentId, (id, parentDto) -> {
-                    parentDto.getReplies().add(dto);
-                    return parentDto;
-                });
-            }
-        }
-
-        return resultComments;
+                    return CommentResponseDto.builder()
+                            .id(parent.getId())
+                            .writer(parent.getWriter())
+                            .createdAt(parent.getCreatedAt())
+                            .content(parent.getContent())
+                            .replies(repliesDto)
+                            .build();
+                }).sorted(Comparator.comparing(CommentResponseDto::getCreatedAt))
+                .toList();
     }
 
     @Transactional
