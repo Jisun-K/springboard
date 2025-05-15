@@ -88,11 +88,11 @@ public class CommentServiceImpl implements CommentService {
     public void deleteCommentWithPasswordCheck(Long postId, Long commentId, String password) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 게시글이 없습니다."));
-        if(passwordValidator.matches(password, post.getPassword())) {
-            commentRepository.deleteById(commentId);
+        if (!passwordValidator.matches(password, post.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
+        commentRepository.deleteById(commentId);
     }
-
 //    @Override
 //    public Comment getById(Long id) {
 //        return commentRepository.findById(id)

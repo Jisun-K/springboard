@@ -45,6 +45,7 @@
 				  <span class="block text-sm font-medium" th:text="${reply.writer}"></span>
 				  <span class="block text-gray-700" th:text="${reply.content}"></span>
 				  <span class="block text-xs text-gray-500" th:text="${#temporals.format(reply.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
+				  <button type="button" class="mt-2 text-xs text-red-600 hover:underline" th:attr="onclick=|onClickDeleteComment(${reply.id}, ${post.id})|">삭제</button>
 				</li>
 			  </ul>
 			</li>
