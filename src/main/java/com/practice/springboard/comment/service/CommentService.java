@@ -10,6 +10,7 @@ public interface CommentService {
 
     List<CommentResponseDto> getCommentsByPostId(Long postId);
     void saveComment(Long postId, CommentCreateRequest request);
-    void delete(Long id);
-    Comment getById(Long id);
+    void deleteCommentWithPasswordCheck(Long postId, Long commentId, String password);
+//    void delete(Long id);
+//    Comment getById(Long id);
 }

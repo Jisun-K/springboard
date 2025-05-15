@@ -6,6 +6,8 @@ import com.practice.springboard.comment.model.Comment;
 import com.practice.springboard.comment.repository.CommentRepository;
 import com.practice.springboard.post.model.Post;
 import com.practice.springboard.post.repository.PostRepository;
+import com.practice.springboard.util.security.PasswordValidator;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
+    private final PasswordValidator passwordValidator;
 
     @Override
     public List<CommentResponseDto> getCommentsByPostId(Long postId) {
@@ -74,15 +77,25 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.save(newComment);
     }
 
+//    @Transactional
+//    @Override
+//    public void delete(Long id) {
+//        commentRepository.deleteById(id);
+//    }
+
     @Transactional
     @Override
-    public void delete(Long id) {
-        commentRepository.deleteById(id);
+    public void deleteCommentWithPasswordCheck(Long postId, Long commentId, String password) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 게시글이 없습니다."));
+        if(passwordValidator.matches(password, post.getPassword())) {
+            commentRepository.deleteById(commentId);
+        }
     }
 
-    @Override
-    public Comment getById(Long id) {
-        return commentRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다." + id));
-    }
+//    @Override
+//    public Comment getById(Long id) {
+//        return commentRepository.findById(id)
+//                .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다." + id));
+//    }
 }

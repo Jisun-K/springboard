@@ -1,6 +1,7 @@
 package com.practice.springboard.post.service;
 
 import com.practice.springboard.post.controller.dto.CreatePostRequest;
+import com.practice.springboard.util.security.PasswordValidator;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
     private final PasswordEncoder passwordEncoder;
-
+    private final PasswordValidator passwordValidator;
 
     @Transactional
     @Override
@@ -50,8 +51,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Boolean checkPassword(Long id, String password) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Post not found: " + id));
-        return passwordEncoder.matches(password, post.getPassword());
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당 게시글이 없습니다."));
+        return passwordValidator.matches(password, post.getPassword());
     }
 
 }
