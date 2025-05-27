@@ -15,7 +15,7 @@
 		<h1 class="text-2xl font-bold mb-2" th:text="${post.title}">제목</h1>
 		<p class="text-sm text-gray-600 mb-1" th:text="${post.writer}">작성자</p>
 		<p class="text-sm text-gray-500 mb-4" th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</p>
-		<p class="text-gray-800 mb-6" th:text="${post.content}">본문</p>
+		<p class="text-gray-800 mb-6 whitespace-pre-line" th:text="${post.content}">본문</p>
 
 		<div class="flex gap-2 mb-6">
 		  <button type="button" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" th:onclick="|onClickUpdate(${post.id})|">글 수정</button>
