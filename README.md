@@ -75,3 +75,6 @@ Spring Boot 기반의 게시판 프로젝트입니다.
 💄 UI스타일링
 
 -->
+
+
+ssh -i "jisun.pem" ec2-user@ec2-3-39-195-255.ap-northeast-2.compute.amazonaws.com
