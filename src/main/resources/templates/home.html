@@ -15,6 +15,16 @@
 
 			<section>
 		       <h2 class="text-xl font-semibold mb-4">📄 최근 게시글</h2>
+
+				<form action="/search" method="get" class="flex items-center space-x-2 mb-6">
+					<input type="text" name="keyword" placeholder="검색어를 입력하세요"
+						   class="flex-1 border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+					<button type="submit"
+							class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded">
+						검색
+					</button>
+				</form>
+
 		       <ul th:if="${posts != null and posts.content.size() > 0}" class="space-y-4">
 		           <li th:each="post : ${posts.content}" class="p-4 border rounded hover:bg-gray-50">
 					   <a th:href="@{/post/{id}(id=${post.id})}">
